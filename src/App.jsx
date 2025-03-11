@@ -13,7 +13,7 @@ const Verify = () => {
         const projectID = Queries.get("projectId");
         const URL = Queries.get("Redirect");
 
-        if (!userID || !secret || !projectID || !URL) {
+        if (!userID || !secret || !projectID) {
             setStatus("error");
             setMessage("🚫Invalid or missing verification link parameters.");
             return;
