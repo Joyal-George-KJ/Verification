@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 const Verify = () => {
     const [status, setStatus] = useState("loading"); // 'loading', 'success', 'error'
+    const [redirect, setRedirect] = useState(""); // 'loading', 'success', 'error'
     const [message, setMessage] = useState("Verifying your account...");
 
     useEffect(() => {
@@ -10,14 +11,15 @@ const Verify = () => {
         const userID = Queries.get("userId");
         const secret = Queries.get("secret");
         const projectID = Queries.get("projectId");
+        const URL = Queries.get("Redirect");
 
-        if (!userID || !secret || !projectID) {
+        if (!userID || !secret || !projectID || !URL) {
             setStatus("error");
-            setMessage("Invalid or missing verification link parameters.");
+            setMessage("🚫Invalid or missing verification link parameters.");
             return;
         }
 
-        console.log(userID, secret, projectID);
+        console.log(userID, secret, projectID, URL);
         
 
         const client = new Client().setEndpoint("https://cloud.appwrite.io/v1").setProject(projectID);
@@ -26,6 +28,7 @@ const Verify = () => {
         account.updateVerification(userID, secret)
             .then(() => {
                 setStatus("success");
+                setRedirect(URL);
                 setMessage("✅ Your account has been successfully verified!");
             })
             .catch((error) => {
@@ -49,7 +52,7 @@ const Verify = () => {
 
             {status === "success" && (
                 <a
-                    href="/login"
+                    href={redirect}
                     className="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-300"
                 >
                     Go to Login
